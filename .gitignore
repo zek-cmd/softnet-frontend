@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 .hormachuelos/
+php-backend
 
 # Build output
 .output/
