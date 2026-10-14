@@ -1,0 +1,223 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  /*
+    No `scroll-behavior: smooth` here on purpose.
+
+    It used to be set, and it made every programmatic jump glide — including
+    the one the router does when a nav link opens another page, so clicking
+    "About" eased all the way up to the top of the new page. Page changes are
+    meant to land straight away.
+
+    The scrolls that ARE meant to animate ask for it where they happen, with
+    an explicit `behavior: 'smooth'`: the `/#section` links in
+    app/router.options.ts, the back-to-top button, and the facilities
+    carousel's arrows in app/pages/index.vue. An explicit behaviour always
+    wins, so those keep their easing.
+  */
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-white font-sans text-gray-600 antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    @apply bg-green-600 text-white;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-green-600;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
+  }
+
+  .section {
+    @apply py-14 sm:py-20 lg:py-24;
+  }
+
+  .band {
+    @apply relative w-full overflow-hidden;
+  }
+
+  .btn-primary {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-green-600 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-green-600/25 transition-all duration-300 hover:bg-green-700 hover:shadow-xl hover:shadow-green-600/30 active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-white/80 px-7 py-3 text-sm font-bold text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-green-700 active:scale-[0.98];
+  }
+
+  .card {
+    @apply rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:ring-green-500;
+  }
+
+  .heading-underline {
+    @apply inline-block border-b-4 border-green-500 pb-3;
+  }
+
+  .texture-bg {
+    background-color: #f8faf9;
+    background-image: url('/_sitc/images/geometric_overlay.jpg');
+    background-size: 480px;
+    background-blend-mode: soft-light;
+  }
+
+  .news-bg {
+    background-color: #f0fdf4;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(34, 197, 94, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(34, 197, 94, 0.04) 0%, transparent 40%);
+  }
+
+  .news-embed-card {
+    position: relative;
+  }
+
+  .news-embed-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 1rem;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.05), rgba(34, 197, 94, 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .news-logo-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .news-logo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(22, 163, 74, 0.35);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Seamless marquee */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Rainbow animated text */
+.rainbow-text {
+  background: linear-gradient(
+    90deg,
+    #ef4444,
+    #f97316,
+    #eab308,
+    #22c55e,
+    #06b6d4,
+    #3b82f6,
+    #8b5cf6,
+    #ec4899
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-shift 4s linear infinite;
+}
+
+@keyframes rainbow-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* Scrollable row with hidden scrollbar */
+.facility-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  cursor: grab;
+}
+.facility-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.facility-scroll.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+.facility-scroll img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Fixed card size — never squeezes regardless of zoom or screen width */
+.facility-card {
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+  height: 280px;
+  flex: 0 0 280px;
+}
+
+/* Parallax — only on capable desktop */
+@media (width >= 1024px) and (hover: hover) and (pointer: fine) {
+  .parallax-fixed {
+    background-attachment: fixed;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  /*
+    NOTE: `scroll-behavior: auto` above does not switch off the eased scrolls
+    asked for explicitly in JavaScript (the `/#section` links, the back-to-top
+    button, the facilities arrows) — `auto` means "whatever the CSS says", and
+    an explicit `behavior: 'smooth'` always overrides CSS. Those three still
+    animate for a visitor who asked for reduced motion.
+  */
+
+  .marquee-track {
+    animation: none;
+  }
+
+  .parallax-fixed {
+    background-attachment: scroll;
+  }
+}

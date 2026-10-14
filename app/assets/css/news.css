@@ -1,0 +1,1149 @@
+/* SOFTNET News — styles for the Vue news pages
+   ---------------------------------------------------------------------------
+   These rules came from public/assets/css/site.css, where the news pages used
+   to live. They moved here when the news pages became Nuxt pages: the markup
+   is the same, so the CSS is the same.
+
+   What stayed behind in site.css is only what the PHP admin still uses. The
+   admin loads site.css and admin.css, and nothing from this file.
+
+   The token block below is the "deep green" palette the news pages always used.
+   It is deliberately separate from Tailwind's green: the news cards and chips
+   are a deeper, calmer green than the marketing pages' bright green. */
+
+:root {
+  --news-bg: #f6f9f7;
+  --news-surface: #ffffff;
+  --news-border: #dde5df;
+  --news-text: #0f1a14;
+  --news-muted: #5b6b61;
+  --news-brand: #0e7a4f;
+  --news-brand-ink: #ffffff;
+  --news-brand-deep: #0a5c3c;
+  --news-brand-tint: #e8f5ee;
+  --news-shadow-hover: 0 12px 28px -18px rgba(15, 26, 20, 0.35);
+
+  --news-sp-1: 4px;
+  --news-sp-2: 8px;
+  --news-sp-3: 12px;
+  --news-sp-4: 16px;
+  --news-sp-5: 24px;
+  --news-sp-6: 32px;
+  --news-sp-7: 48px;
+  --news-sp-8: 72px;
+
+  --news-radius: 12px;
+  --news-radius-sm: 8px;
+  --news-radius-pill: 999px;
+
+  /* The page surface of the news pages: the very same pale green wash and dot
+     pattern the Home, About and Contact pages use, so the news pages sit on
+     the same surface as the rest of the site.
+
+     Those pages build it out of three things — a
+     `bg-gradient-to-b from-green-50/80 via-white to-green-50/80` band, a
+     separate dotted overlay at `opacity-40`, and a 24px grid. Here the same
+     three are folded into one rule, because this surface is painted on <main>
+     and has to cover the whole screen:
+
+       green-50 #f0fdf4 at 80%  ->  --news-page-tint
+       green-500 #22c55e at 40% ->  --news-page-dot
+       24px dot grid            ->  --news-page-dot-size
+
+     A dot colour of green-500 at 40% alpha paints exactly what an
+     `opacity-40` overlay of opaque dots paints, so the pattern matches theirs
+     dot for dot. */
+  --news-page-bg: #ffffff;
+  --news-page-tint: rgba(240, 253, 244, 0.8);
+  --news-page-dot: rgba(34, 197, 94, 0.4);
+  --news-page-dot-size: 24px;
+
+  /* The width of one news item's column.
+
+     90% of the screen, capped at 80rem (1280px) — the same width as the hero
+     band above it, so a very wide monitor stops stretching the block. The
+     story text uses this same width: there is deliberately no narrower
+     character cap on the paragraphs, so the words line up with the cover
+     photo, the gallery and the share row around them. */
+  --news-reading-width: min(90%, 80rem);
+}
+
+/* ---------------------------------------------------------------------------
+   The page surface
+   ---------------------------------------------------------------------------
+   Put on <main> by app/layouts/default.vue while the address is a news one, so
+   it covers the whole screen — a page's own markup only covers the height of
+   its content, which would leave the bottom of a short page plain.
+
+   The news backgrounds are drawn with background-image rather than a picture
+   file: nothing extra to download, and the pattern stays sharp on any screen.
+
+   The dots are listed first, so they paint on top of the wash — the order the
+   other pages stack the two in as well. Their wash covers one band; this one
+   covers the whole page, so it is the same green, stretched. */
+
+.news-page-bg {
+  background-color: var(--news-page-bg);
+  background-image:
+    radial-gradient(circle, var(--news-page-dot) 1px, transparent 1px),
+    linear-gradient(
+      to bottom,
+      var(--news-page-tint),
+      var(--news-page-bg),
+      var(--news-page-tint)
+    );
+  background-size: var(--news-page-dot-size) var(--news-page-dot-size), 100% 100%;
+  background-repeat: repeat, no-repeat;
+}
+
+/* ---------------------------------------------------------------------------
+   Back link
+   --------------------------------------------------------------------------- */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--news-brand);
+  transition: color 0.15s ease;
+}
+
+.back-link:hover {
+  color: var(--news-brand-deep);
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------------------
+   Section names (the small line above a heading)
+   --------------------------------------------------------------------------- */
+
+.eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--news-brand);
+}
+
+/* ---------------------------------------------------------------------------
+   Tags
+   --------------------------------------------------------------------------- */
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--news-sp-3);
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border: 1px solid var(--news-border);
+  border-radius: var(--news-radius-pill);
+  background: var(--news-surface);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--news-muted);
+  letter-spacing: 0.01em;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+a.tag-chip:hover {
+  border-color: var(--news-brand);
+  color: var(--news-brand);
+  background: var(--news-brand-tint);
+}
+
+/* ---------------------------------------------------------------------------
+   Tag filter row + search toolbar
+   --------------------------------------------------------------------------- */
+
+.news-tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--news-sp-2);
+  margin: 0 0 var(--news-sp-6);
+  padding-bottom: var(--news-sp-5);
+  border-bottom: 1px solid var(--news-border);
+}
+
+.news-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border: 1px solid var(--news-border);
+  border-radius: var(--news-radius-pill);
+  background: var(--news-surface);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--news-muted);
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.news-tag-chip:hover {
+  border-color: var(--news-brand);
+  color: var(--news-brand);
+  background: var(--news-brand-tint);
+}
+
+.news-tag-chip.is-active {
+  background: var(--news-brand);
+  border-color: var(--news-brand);
+  color: var(--news-brand-ink);
+}
+
+.news-tag-chip.is-active .news-tag-count {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.news-tag-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--news-muted);
+}
+
+.news-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--news-sp-3);
+  margin-bottom: var(--news-sp-6);
+}
+
+.news-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 340px;
+}
+
+.news-search-icon {
+  position: absolute;
+  left: 13px;
+  width: 16px;
+  height: 16px;
+  color: var(--news-muted);
+  pointer-events: none;
+}
+
+.news-search-input {
+  width: 100%;
+  padding: 11px 14px 11px 40px;
+  border: 1px solid var(--news-border);
+  border-radius: var(--news-radius-sm);
+  background: var(--news-surface);
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--news-text);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.news-search-input:focus {
+  outline: none;
+  border-color: var(--news-brand);
+  box-shadow: 0 0 0 3px rgba(14, 122, 79, 0.14);
+}
+
+.news-search-input::placeholder {
+  color: #94a49a;
+}
+
+.news-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--news-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.news-clear svg {
+  width: 13px;
+  height: 13px;
+}
+
+.news-clear:hover {
+  color: var(--news-text);
+}
+
+/* ---------------------------------------------------------------------------
+   Lead story
+   --------------------------------------------------------------------------- */
+
+.lead-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border: 1px solid var(--news-border);
+  border-radius: var(--news-radius);
+  background: var(--news-surface);
+  overflow: hidden;
+  margin-bottom: var(--news-sp-7);
+}
+
+.lead-media {
+  display: block;
+  background: #eef3f0;
+}
+
+.lead-media img {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  max-height: 420px;
+  object-fit: contain;
+}
+
+.lead-body {
+  padding: var(--news-sp-6) var(--news-sp-5);
+}
+
+.lead-title {
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.12;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-top: var(--news-sp-3);
+  text-wrap: balance;
+}
+
+.lead-title a {
+  transition: color 0.18s ease;
+}
+
+.lead-title a:hover {
+  color: var(--news-brand);
+}
+
+.lead-summary {
+  margin-top: var(--news-sp-3);
+  color: var(--news-muted);
+  font-size: 16px;
+  max-width: 44ch;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--news-sp-3);
+  margin-top: var(--news-sp-4);
+}
+
+.lead-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--news-sp-3);
+  margin-top: var(--news-sp-5);
+  flex-wrap: wrap;
+}
+
+.btn-read {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--news-radius-sm);
+  background: var(--news-brand);
+  color: var(--news-brand-ink);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.btn-read svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.18s ease;
+}
+
+.btn-read:hover {
+  background: var(--news-brand-deep);
+  transform: translateY(-1px);
+}
+
+.btn-read:hover svg {
+  transform: translateX(3px);
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--news-muted);
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--news-radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-green {
+  background: var(--news-brand-tint);
+  color: var(--news-brand-deep);
+}
+
+/* ---------------------------------------------------------------------------
+   News grid
+   --------------------------------------------------------------------------- */
+
+.news-grid {
+  display: grid;
+  gap: var(--news-sp-5);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.news-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--news-surface);
+  border: 1px solid var(--news-border);
+  border-radius: var(--news-radius);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--news-shadow-hover);
+  border-color: #c9d8ce;
+}
+
+.news-card-media {
+  display: block;
+  background: #eef3f0;
+}
+
+.news-card-media img {
+  width: 100%;
+  height: 190px;
+  object-fit: contain;
+}
+
+.news-card-body {
+  padding: var(--news-sp-5);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: var(--news-sp-2);
+}
+
+.news-card-title {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--news-text);
+  overflow-wrap: anywhere;
+}
+
+.news-card-title a:hover {
+  color: var(--news-brand);
+}
+
+.news-card-summary {
+  font-size: 14px;
+  color: var(--news-muted);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.news-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--news-sp-3);
+  margin-top: auto;
+  padding-top: var(--news-sp-4);
+}
+
+.news-card-foot-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--news-sp-2);
+  flex-shrink: 0;
+}
+
+/* "3 photos" marker on a card or the lead story */
+.photo-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--news-muted);
+}
+
+.photo-count svg {
+  width: 14px;
+  height: 14px;
+}
+
+.photo-count-quiet {
+  gap: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   Sharing
+   --------------------------------------------------------------------------- */
+
+.share-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--news-sp-3);
+  margin: var(--news-sp-7) 0 0;
+  padding-top: var(--news-sp-5);
+  border-top: 1px solid var(--news-border);
+}
+
+.share-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--news-muted);
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--news-border);
+  border-radius: var(--news-radius-sm);
+  background: var(--news-surface);
+  color: var(--news-text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.share-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.share-btn:hover {
+  border-color: var(--news-brand);
+  color: var(--news-brand);
+  background: var(--news-brand-tint);
+  transform: translateY(-1px);
+}
+
+.share-btn:focus-visible {
+  outline: 2px solid var(--news-brand);
+  outline-offset: 2px;
+}
+
+.share-facebook:hover {
+  background: #e7f0fb;
+  border-color: #1877f2;
+  color: #125bb5;
+}
+
+.share-btn.is-done {
+  border-color: var(--news-brand);
+  color: var(--news-brand);
+  background: var(--news-brand-tint);
+}
+
+/* Quiet variant: used inside a card foot, so it does not shout */
+.share-btn-quiet {
+  padding: 6px 10px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--news-muted);
+}
+
+.share-btn-quiet:hover {
+  background: var(--news-brand-tint);
+}
+
+.share-btn-quiet .share-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* ---------------------------------------------------------------------------
+   One news item — the reading column
+   ---------------------------------------------------------------------------
+   The shell holds everything between the two "back to all news" links: the
+   back links, the cover photo, the tags, the story, the sub-image gallery and
+   the share row. They all get the full 90%. */
+
+.article-shell {
+  width: var(--news-reading-width);
+  margin: 0 auto;
+  padding: var(--news-sp-7) 0 var(--news-sp-8);
+}
+
+.article-column {
+  min-width: 0;
+}
+
+.article-column img,
+.article-column video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* The cover photo, capped in BOTH directions.
+
+   A width cap alone is not enough: a tall portrait photo would stay narrow but
+   run down the whole screen. So the width is capped at 520px and the height at
+   half the screen — min(52vh,440px) — whichever is smaller. The image keeps
+   width:auto, height:auto, so it scales down on its own and never stretches or
+   crops. */
+.article-column img.post-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 520px);
+  max-height: min(52vh, 440px);
+  margin: 0 auto var(--news-sp-6);
+  border-radius: var(--news-radius);
+  border: 1px solid var(--news-border);
+}
+
+.post-content {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--news-text);
+  overflow-wrap: break-word;
+}
+
+/* The story text runs the full width of the shell. There is deliberately NO
+   character cap on the paragraphs, headings or quotes — one used to sit here
+   (max-width:72ch) and it made the text narrower than the cover photo, the
+   gallery and the share row around it. */
+.post-content p {
+  margin-bottom: 1.1em;
+}
+
+.post-content p:last-child {
+  margin-bottom: 0;
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3 {
+  margin-top: 1.4em;
+  margin-bottom: 0.6em;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.post-content h1 {
+  font-size: 1.6rem;
+}
+
+.post-content h2 {
+  font-size: 1.35rem;
+}
+
+.post-content h3 {
+  font-size: 1.15rem;
+}
+
+.post-content ul,
+.post-content ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.1em;
+  list-style: revert;
+}
+
+.post-content li {
+  margin-bottom: 0.35em;
+}
+
+.post-content a {
+  color: var(--news-brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.post-content a:hover {
+  color: var(--news-brand-deep);
+}
+
+.post-content blockquote {
+  border-left: 3px solid var(--news-brand);
+  padding-left: var(--news-sp-4);
+  margin: 1.2em 0;
+  color: var(--news-muted);
+  font-style: italic;
+}
+
+.post-content strong,
+.post-content b {
+  font-weight: 700;
+}
+
+.article-foot {
+  margin-top: var(--news-sp-7);
+}
+
+/* ---------------------------------------------------------------------------
+   Gallery — the sub images of one news item
+   ---------------------------------------------------------------------------
+   A phone browses the sub images sideways: one photo fills the width and a
+   flick slides to the next, instead of a grid of small thumbnails. The strip is
+   plain CSS scrolling with snap points, so it works with no JavaScript at all.
+   From 640px up the same markup is a grid again. */
+
+.gallery {
+  margin-top: var(--news-sp-7);
+  padding-top: var(--news-sp-6);
+  border-top: 1px solid var(--news-border);
+}
+
+.gallery-grid {
+  display: flex;
+  gap: var(--news-sp-4);
+  margin-top: var(--news-sp-5);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+
+.gallery-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+}
+
+.gallery-link {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--news-border);
+  border-radius: var(--news-radius-sm);
+  background: var(--news-surface);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gallery-link:hover {
+  border-color: var(--news-brand);
+  transform: translateY(-2px);
+  box-shadow: var(--news-shadow-hover);
+}
+
+.gallery-link:focus-visible {
+  outline: 2px solid var(--news-brand);
+  outline-offset: 2px;
+}
+
+/* The whole photo, never a cropped middle. "contain" fits the picture inside
+   its tile whole; "cover" would fill the tile by cutting the edges off. */
+.gallery-item img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: #eef3f0;
+}
+
+.gallery-caption {
+  font-size: 12px;
+  color: var(--news-muted);
+  line-height: 1.45;
+  margin-top: var(--news-sp-2);
+  overflow-wrap: anywhere;
+}
+
+/* The mobile pager under the swipe strip: one dot per photo, plus a "2 of 5"
+   counter. It is hidden from 640px up, where the photos are a grid again and
+   the dots would mean nothing. */
+.gallery-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--news-sp-3);
+  margin-top: var(--news-sp-4);
+}
+
+.gallery-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gallery-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--news-border);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.gallery-dot[aria-current='true'] {
+  background: var(--news-brand);
+  transform: scale(1.3);
+}
+
+.gallery-pager-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--news-muted);
+}
+
+@media (min-width: 640px) {
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-bottom: 0;
+  }
+
+  /* Nothing to page through once the photos are a grid. */
+  .gallery-pager {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The photo viewer (modal)
+   ---------------------------------------------------------------------------
+   The Vue gallery opens this. A reader with JavaScript off still gets a real
+   link to the full-size photo, so nothing is lost. */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--news-sp-5);
+}
+
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 18, 12, 0.9);
+}
+
+.lightbox-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--news-sp-3);
+  width: 100%;
+  max-width: 900px;
+  max-height: 100%;
+}
+
+.lightbox-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--news-sp-4);
+}
+
+.lightbox-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.lightbox-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--news-radius-pill);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.lightbox-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.lightbox-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* The photo itself: never taller than the screen it is shown on. */
+.lightbox-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--news-sp-3);
+  min-height: 0;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: min(70vh, 620px);
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  border-radius: var(--news-radius-sm);
+  background: #0f1a14;
+}
+
+.lightbox-caption {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* The page behind must not scroll while the viewer is open. */
+body.lightbox-open {
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .lightbox {
+    padding: var(--news-sp-3);
+  }
+
+  .lightbox-stage {
+    gap: 0;
+  }
+
+  .lightbox-image {
+    max-height: min(60vh, 520px);
+  }
+
+  /* The arrows float over the photo edges on a small screen, where sitting
+     side by side with the picture would eat width it needs. */
+  .lightbox-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: 38px;
+    height: 38px;
+    background: rgba(8, 18, 12, 0.55);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .lightbox-prev {
+    left: 6px;
+  }
+
+  .lightbox-next {
+    right: 6px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Empty state
+   --------------------------------------------------------------------------- */
+
+.news-empty {
+  text-align: center;
+  padding: var(--news-sp-8) var(--news-sp-5);
+  color: var(--news-muted);
+}
+
+.news-empty svg {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto var(--news-sp-4);
+  opacity: 0.45;
+}
+
+.news-empty p {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--news-text);
+}
+
+.news-empty-link {
+  display: inline-block;
+  margin-top: var(--news-sp-4);
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--news-brand);
+  cursor: pointer;
+}
+
+.news-empty-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------------------
+   Pagination
+   --------------------------------------------------------------------------- */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--news-sp-3);
+  margin-top: var(--news-sp-7);
+  padding-top: var(--news-sp-4);
+  border-top: 1px solid var(--news-border);
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: var(--news-muted);
+  font-weight: 600;
+}
+
+.pagination-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 11px;
+  border: 1px solid var(--news-border);
+  border-radius: var(--news-radius-sm);
+  background: var(--news-surface);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--news-text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--news-brand);
+  color: var(--news-brand);
+}
+
+.page-btn.active {
+  background: var(--news-brand);
+  border-color: var(--news-brand);
+  color: var(--news-brand-ink);
+}
+
+.page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.page-ellipsis {
+  font-size: 13px;
+  color: var(--news-muted);
+  padding: 0 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   Responsive
+   --------------------------------------------------------------------------- */
+
+@media (min-width: 768px) {
+  .lead-card {
+    grid-template-columns: 1.02fr 1fr;
+  }
+
+  .lead-body {
+    padding: var(--news-sp-7) var(--news-sp-6);
+  }
+
+  .news-card-media img {
+    height: 210px;
+  }
+}
+
+@media (max-width: 600px) {
+  .news-toolbar {
+    justify-content: stretch;
+    flex-wrap: wrap;
+  }
+
+  .news-search-wrap {
+    max-width: none;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .share-row {
+    gap: var(--news-sp-2);
+  }
+
+  .share-btn {
+    padding: 9px 13px;
+  }
+
+  /* On a phone the reading column keeps its 90% width, but the vertical padding
+     is trimmed — the 10% left over is already the side breathing room. */
+  .article-shell {
+    padding: var(--news-sp-6) 0 var(--news-sp-7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-card:hover,
+  .btn-read:hover,
+  .share-btn:hover,
+  .gallery-link:hover {
+    transform: none;
+  }
+}

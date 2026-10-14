@@ -1,0 +1,130 @@
+RewriteEngine On
+
+# ---------------------------------------------------------
+# Storage (never served over HTTP)
+# ---------------------------------------------------------
+
+RewriteRule ^storage(/|$) - [F,L]
+
+# ---------------------------------------------------------
+# Public
+# ---------------------------------------------------------
+
+# ---------------------------------------------------------
+# Public news — head written by PHP, page drawn by the Nuxt app
+# ---------------------------------------------------------
+# Both halves of a news page are needed, and neither can do the other's job:
+#
+#   * Facebook, Messenger, WhatsApp and Google do NOT run JavaScript. They
+#     read the HTML the server sends, so the story's real title, summary and
+#     cover photo must be in the <head> already. Only PHP can do that — the
+#     database is right there.
+#   * The page the visitor sees is the Nuxt app, which fetches the story live
+#     from /api/news-item. Fresh on every visit, no rebuild, one design.
+#
+# So every readable news address goes to news-view.php, which looks up the
+# story, writes the real <head> tags, and hands the same page to the app.
+# A story posted a minute ago has a page straight away.
+#
+# The build no longer writes a news/ folder at all, so there is nothing on disk
+# for these rules to shadow.
+
+# /news — the list.
+RewriteRule ^news/?$ news-view.php [L]
+
+# /news/page/2 — the list, one page further on.
+RewriteRule ^news/page/([0-9]+)/?$ news-view.php?page=$1 [L]
+
+# /news/softnet-sports-day — one story.
+#
+# The pattern demands at least one LETTER, so a plain number can never be
+# caught here: /news/12 belongs to the redirect rule below, and two rules
+# matching the same address is how a redirect turns into a loop.
+RewriteRule ^news/([a-z0-9-]*[a-z][a-z0-9-]*)/?$ news-view.php?slug=$1 [L]
+
+# /news/12 — the OLD numeric address.
+#
+# A number is still a real address people hold links to, so it is not simply
+# dropped: news-redirect.php looks the story up and answers with a permanent
+# redirect to its readable address. A number matching nothing gets a real 404.
+#
+# [0-9]+ only, so this can never catch a readable address and send it in a loop.
+RewriteRule ^news/([0-9]+)/?$ news-redirect.php?a=$1 [L]
+
+# ---------------------------------------------------------
+# Old addresses — permanent redirects to the new ones
+# ---------------------------------------------------------
+# /posts      ->  /news
+# /post       ->  /news
+# /post/123   ->  /news/123
+#
+# Facebook previews, Google results and messages already sent out point at the
+# old addresses. 301 tells the browser and the search engine the page has moved
+# for good, so nobody lands on a 404.
+#
+# RedirectMatch (not RewriteRule) is used on purpose: it needs no PHP file to
+# run, so the redirect keeps working even if these lines outlive the old files.
+
+# /post/123   ->  /news/123
+#
+# Only the numeric form is redirected: an old "post" address never had a
+# readable one, so there is nothing else it could have been.
+RedirectMatch 301 ^/posts/?$ /news
+RedirectMatch 301 ^/post/?$ /news
+RedirectMatch 301 ^/post/([0-9]+)/?$ /news/$1
+
+# ---------------------------------------------------------
+# Admin
+# ---------------------------------------------------------
+
+# /admin
+RewriteRule ^admin/?$ admin/dashboard.php [L]
+
+# /admin/edit
+RewriteRule ^admin/edit/?$ admin/edit.php [L]
+
+# /admin/edit/123
+RewriteRule ^admin/edit/([0-9]+)/?$ admin/edit.php?id=$1 [L]
+
+# /admin/delete/123 — kept for direct links. The Delete button itself posts to
+# /admin/delete, below.
+RewriteRule ^admin/delete/([0-9]+)/?$ admin/delete.php?id=$1 [L]
+
+# /admin/delete — the POST target of the Delete button in the dashboard.
+# The id travels in the form's POST body, not in the address, so this rule
+# has no id to capture. Without it the address matches nothing and Apache
+# answers 404. Opening it in a browser by hand is harmless: delete.php only
+# acts on POST and sends a plain GET straight back to the dashboard.
+RewriteRule ^admin/delete/?$ admin/delete.php [L]
+
+# /admin/bulk-delete  (POST target for bulk actions)
+RewriteRule ^admin/bulk-delete/?$ admin/bulk-delete.php [L]
+
+# /admin/gallery/123 — the sub images (gallery) of one news item
+RewriteRule ^admin/gallery/([0-9]+)/?$ admin/gallery.php?id=$1 [L]
+
+# /admin/settings
+RewriteRule ^admin/settings/?$ admin/settings.php [L]
+
+# /admin/login
+RewriteRule ^admin/login/?$ admin/login.php [L]
+
+# /admin/logout
+RewriteRule ^admin/logout/?$ admin/logout.php [L]
+
+# ---------------------------------------------------------
+# API
+# ---------------------------------------------------------
+
+# /api/news  (the JSON list the Nuxt site reads)
+RewriteRule ^api/news/?$ api/news.php [L]
+
+# /api/news-item?id=12  or  /api/news-item?slug=softnet-scholarship-2026
+#
+# The story body and the sub images, for one news item. Kept apart from the
+# list feed so the home page does not download every article's full text.
+RewriteRule ^api/news-item/?$ api/news-item.php [L]
+
+# /api/posts — the old feed address, read by the Nuxt site as deployed today.
+# It now serves the same data. Delete both lines once the new site is live.
+RewriteRule ^api/posts/?$ api/posts.php [L]
