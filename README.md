@@ -40,11 +40,11 @@ Two programs, in this order:
 # 1. the database (Laragon → Start All, so MySQL is running)
 
 # 2. the news backend
-cd 'C:\Users\MAITA GOINGCO\Documents\strapi'
+cd 'C:\yourpath\your-strapi-project'
 npm run develop            # the admin is then at http://localhost:1337/admin
 
 # 3. this site
-cd 'C:\Users\MAITA GOINGCO\Documents\school1'
+cd 'C:\yourpath\your-project'
 npm install
 npm run dev                # http://localhost:3000
 ```

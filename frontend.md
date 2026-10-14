@@ -26,44 +26,43 @@ flowchart TD
 |---|---|---|---|
 | **Every page a visitor reads** | `app/` | by the Node process, on each request | Tailwind through the Nuxt build |
 | **The site's own images** | `static/` | as plain files | — |
-| **The retired PHP backend** | `php-backend/` | **not published at all** | `site.css` + `admin.css` (admin only, if it is ever run again) |
 
 **The news pages used to be PHP, then became files in the build, and are now made on the
 server.** A story's real title, summary and cover photo have to be in the `<head>` before the
 page leaves the server — Facebook and Google read that and never run JavaScript. The page is
-now built on every request, so the story is fresh and the share card is right. There is still
+now built on every request, so the story is fresh and the share card is right. There is
 **one** navbar, **one** footer and **one** Tailwind build.
 
 **One thing that follows:** `nuxt.config.ts` sets `dir.public` to `static/`, so the published
-site is `static/` plus the build output and **nothing else**. That is what keeps the PHP
-folder out of the published site — see `README.md` §6.
+site is `static/` plus the build output and **nothing else**. Uploading is a copy of
+`.output/`, which is the whole app — see `README.md`.
 
 **Consequence to remember:** a class you type into a `.vue` file works after
-`npm run build`. Nothing in the project compiles Tailwind from a `.php` file any more,
-so `npm run build:php-css` no longer exists.
+`npm run build`, and never before. There is no second build — the PHP one is gone with the
+PHP pages.
 
 ---
 
 ## 2. Colour
 
-**Two palettes are left, and they no longer sit side by side.** The Nuxt site uses bright
-Tailwind green. The **admin panel** uses a deeper green of its own, in `admin.css`.
+**Two greens live side by side.** The Nuxt site uses bright Tailwind green. The **news
+pages** use a deeper green of their own, kept in `news.css`.
 
-The news pages used to use that deep green too (from `site.css`). They are Nuxt pages now,
-and they keep the same deep green **in their own token block** in
+The news pages inherited that deep green from the PHP stylesheet (`site.css`). They are Nuxt
+pages now, and they keep the same deep green **in their own token block** in
 `app/assets/css/news.css` — so the news pages still look like the news pages, while the
 rest of the site stays bright green.
 
-| Role | Nuxt site (Tailwind) | News pages (`news.css`) | Admin (`admin.css`) |
-|---|---|---|---|
-| Brand | `green-600` `#16a34a` | `--news-brand` `#0e7a4f` | `#166534` |
-| Brand, deep | `green-700` `#15803d` | `--news-brand-deep` `#0a5c3c` | `#dcfce7` (pale) |
-| Brand, pale | `green-50` `#f0fdf4` | `--news-brand-tint` `#e8f5ee` | — |
-| Dark band | `gray-900` `#111827` | — (the hero is Tailwind `bg-gray-900`) | — |
-| Page background | `white` | `--news-page-bg` `#ffffff` under the shared green wash | — |
-| Body text | `gray-600` | `--news-text` `#0f1a14` | — |
-| Muted text | `gray-500` | `--news-muted` `#5b6b61` | — |
-| Hairline | `gray-200` | `--news-border` `#dde5df` | — |
+| Role | Nuxt site (Tailwind) | News pages (`news.css`) |
+|---|---|---|
+| Brand | `green-600` `#16a34a` | `--news-brand` `#0e7a4f` |
+| Brand, deep | `green-700` `#15803d` | `--news-brand-deep` `#0a5c3c` |
+| Brand, pale | `green-50` `#f0fdf4` | `--news-brand-tint` `#e8f5ee` |
+| Dark band | `gray-900` `#111827` | — (the hero is Tailwind `bg-gray-900`) |
+| Page background | `white` | `--news-page-bg` `#ffffff` under the shared green wash |
+| Body text | `gray-600` | `--news-text` `#0f1a14` |
+| Muted text | `gray-500` | `--news-muted` `#5b6b61` |
+| Hairline | `gray-200` | `--news-border` `#dde5df` |
 
 **Every colour on the news pages lives in one block at the top of
 `app/assets/css/news.css`.** Nothing below it should introduce a new hex value — edit
@@ -72,10 +71,9 @@ rest of the site stays bright green.
 The names are prefixed `--news-` on purpose: the same stylesheet is loaded next to
 Tailwind, and a bare `--brand` could collide with a Tailwind token of the same name.
 
-The old `public/assets/css/site.css` still declares the same deep green (`--brand`,
-`--reading-width`, and so on). Nothing but the admin loads that file now, and the admin
-uses none of those tokens — so treat that block as **frozen history**, not as the place to
-edit the news pages.
+`app/assets/css/news.css` is the **only** stylesheet the news pages load. The old PHP
+`site.css` went with the PHP backend, so there is no second copy of these colours to keep in
+step.
 
 ---
 
@@ -126,16 +124,14 @@ Both live in `@layer components` with `@apply`, in `main.css`.
 
 ## 4. Breakpoints
 
-| Meaning | Nuxt / news.css | Old PHP `site.css` |
-|---|---|---|
-| Small phone | under `600px` | under `600px` |
-| `sm` | `40rem` / 640px | `640px` |
-| `md` | `48rem` / 768px | `768px` |
-| `lg` | `64rem` / 1024px | `1024px` |
-| `xl` | `80rem` / 1280px | — |
-| Reduced motion | `prefers-reduced-motion` | `prefers-reduced-motion` |
-
-The old column is kept because `site.css` is still on disk for the admin.
+| Meaning | Value |
+|---|---|
+| Small phone | under `600px` |
+| `sm` | `40rem` / 640px |
+| `md` | `48rem` / 768px |
+| `lg` | `64rem` / 1024px |
+| `xl` | `80rem` / 1280px |
+| Reduced motion | `prefers-reduced-motion` |
 
 **Two rules that matter:**
 
@@ -147,9 +143,9 @@ The old column is kept because `site.css` is still on disk for the admin.
   before opening the photo viewer. Same number in both places, so the strip and the
   viewer switch over together.
 
-> **One thing was lost in the move.** The PHP page also had
+> **One thing was lost when the news pages left PHP.** The old page had
 > `@media not all and (min-width:640px){ .gallery-link{pointer-events:none} }`, which made
-> the tap dead on a phone **even with JavaScript off**. That rule was not carried into
+> the tap dead on a phone **even with JavaScript off**. That rule was never carried into
 > `news.css`. With JavaScript off, tapping a photo on a phone now opens the full-size image —
 > the same thing the grid does on a big screen. Add the rule back if you want the old
 > behaviour.
@@ -257,7 +253,7 @@ different page number.
 | **Tag row** | A row of buttons with counts, from the `tags` the API reports |
 | **Search** | A box on the right. Typing waits **300ms** before asking, so it does not fire on every letter |
 | **Lead card** | Only on the plain first page — a search or a tag drops it, so results are not pushed down |
-| **Pager** | **Real `NuxtLink`s** while no filter is on, so a crawler can walk the whole list. Once a search or tag is on it becomes buttons, because there is nothing to bake for it |
+| **Pager** | **Real `NuxtLink`s** while no filter is on, so a crawler can walk the whole list. Once a search or tag is on it becomes buttons, because there is nothing for a crawler to follow |
 | **Stale answers** | Each request carries an id, and a slow earlier answer is thrown away rather than overwriting a newer one |
 
 **`[slug].vue` ends in two forms:** a number takes the old `?id=` route, anything else the
@@ -313,12 +309,14 @@ the news list page. It shows the newest four stories only.
   unreachable, or when no row has a title. Nothing is rendered at all — no
   heading, no empty grid, no gap.
 
-**It fetches in the browser**, in `onMounted`, so it is not part of the bake. That is fine:
-it is a section on a page whose own title and description are already in the HTML.
+**It fetches on the server**, inside `useAsyncData`, so the stories arrive with the page:
+Google and a reader without JavaScript see the headlines themselves rather than a space that
+fills in later.
 
-> **Its links are still absolute**, built from the API host (`newsIndexUrl`). On the live
-> site that is the same domain, so it works — but it costs a full page load, and a staging
-> build would send readers to the staging host. See *Known loose ends*.
+**Its links stay on this site.** "View all news" and the tag chips point at `/news` — they
+used to be absolute links built from the news host (`newsIndexUrl`), which was the same domain
+while PHP served the news pages, but would now drop a reader on the news backend where there is
+no page to land on.
 
 ### Motion
 
@@ -345,8 +343,7 @@ it is a section on a page whose own title and description are already in the HTM
   for a visitor who asked for reduced motion. Wrap them in a
   `matchMedia('(prefers-reduced-motion: reduce)')` check if that needs fixing.
 - **`news.css` has its own block** at the bottom that switches off the news-card lift and
-the gallery hover, so the news pages do respect the setting.
-- **The old `site.css` block is still there** but nothing a visitor reads loads that file.
+  the gallery hover, so the news pages do respect the setting.
 
 ### Two scrolling patterns worth knowing
 
@@ -357,35 +354,26 @@ the gallery hover, so the news pages do respect the setting.
 
 ---
 
-## 6. The retired PHP news chrome
+## 6. There is no PHP any more
 
-This section used to describe how to keep **two copies** of the navbar and the footer in
-step — one in Vue, one in PHP — and the second Tailwind build that made the PHP copy work.
+This section used to be long. It described keeping **two copies** of the navbar and the footer
+in step — one in Vue, one in PHP — and the second Tailwind build that made the PHP copy work.
 
-**All of that is gone.** The news pages are Nuxt pages, so:
+**The whole PHP side has since been deleted**, not just retired: the folder that held it, the
+API, the admin screens, the hand-copied navbar and footer, `site-info.php`, the second Tailwind
+build (`npm run build:php-css`) and the checks that inspected them.
 
-- `public/includes/nav.php` and `footer.php` — the hand-copies — were archived and have since
-  been **deleted**.
-- `tailwind/php-chrome.css` and its compiled `public/assets/css/php-chrome.css` went with them.
-- `npm run build:php-css` no longer exists, and neither does its watch version.
-- `public/includes/site-info.php` (the PHP side's own copy of the address and phone numbers)
-  went too. `app/utils/site.js` is now the only place those live.
+What that leaves for anyone reading this file:
 
-The tests moved with it: `tests/chrome-check.php` used to render the PHP navbar and footer
-and inspect the HTML. It now reads `AppHeader.vue` and `AppFooter.vue` and proves the PHP
-copies are **gone**. Same job, opposite direction.
+- **One navbar, one footer, one build.** `AppHeader.vue` and `AppFooter.vue` are the only
+  copies, and `npm run build` is the only build.
+- **One copy of the school's details** — `app/utils/site.js` holds the address, the phone
+  numbers, the email and the hours.
+- **The admin panel is Strapi now.** It has its own look, its own address, and none of it is
+  styled from `news.css`.
 
-**The admin panel is the one thing still in PHP**, and it keeps its own header, its own
-`admin.css` and its own `admin-nav.js`. It is not part of the public look and should not be
-styled from `news.css`.
-
-### Archives — now deleted
-
-The retired PHP pages sat in `_archive/php-news-pages/` while the new pages settled. That
-folder, `bin/tailwind.exe`, `public/public.zip`, the dead `news.js` and `nav.js`, and the empty
-`tailwind/` and root `uploads/` folders have all been **deleted**. There is **no git in this
-project**, so those deletions are permanent. The full list, with sizes, is in the README under
-"Already deleted".
+**The project is a git repository**, so anything deleted is still in its history if it is ever
+wanted back.
 
 ---
 
@@ -434,8 +422,7 @@ ignored.
 | Trap | Why it bites | What protects you |
 |---|---|---|
 | The news pages are made on the server | That is the design: each is rendered when it is asked for, so its share card is right | The app writes the head tags itself; `news-view.php` is not involved any more |
-| The PHP folder must not be published | A build would ship `config.php` (the database credentials) to the new host | `dir.public` is `static/` in `nuxt.config.ts`; the PHP folder is `php-backend/` |
-| A leftover `news/` folder in an upload | Frozen pages from an older build would sit there unread | The build writes no `news/` folder at all; delete one if you see it |
+| An old upload left in the way | Frozen pages from an older build would sit there unread | The build writes no `news/` folder at all; delete one if you see it |
 | Every readable news address is a page | Nuxt routes them | `app/pages/news/index.vue`, `page/[page].vue` and `[slug].vue` |
 | A story exists at two addresses | `/news/12` and `/news/sports-day` both work | The number is matched against the old id and Strapi's own, and the page carries a **canonical** |
 | A story that is not there | Google would keep a dead address alive | The page answers **404** and sets `noindex` |
@@ -470,12 +457,10 @@ ignored.
 | `app/utils/news-fetch.ts` | Retries a slow news backend; shorter patience on the server |
 | `app/utils/site.js` | Address, phones, email, hours — the only copy now |
 | `static/_sitc/images/` | The site's own images. Published with the site |
-| `php-backend/` | The retired PHP backend. **Not published.** Kept while the live site is still on PHP |
-| `php-backend/assets/css/site.css` | The old public stylesheet. Only ever loaded by the old admin now |
-| `php-backend/api/news.php` | The old JSON feed (no longer read) |
-| `php-backend/news-redirect.php` | Used to turn `/news/12` into a 301. The site handles that itself now |
-| `tests/chrome-check.php` | Navbar, footer, and the one-copy rule — for the retired backend |
-| `tests/routing-check.php` | The old PHP address table. **Only meaningful if that backend is run again** |
+| `nuxt.config.ts` | Every setting: the two hosts, the design tokens' stylesheets, and the pages written to files at build time |
+| `README.md` | How to run, build and host it |
+| `frontend.md` | This file: how it looks and where each look lives |
+| `migrations/`, `database.sql` | The old PHP database, kept as a record. **Nothing reads them** |
 
 ---
 
@@ -492,7 +477,7 @@ ignored.
 | The gallery breakpoint | **Both** `news.css` and `[slug].vue` — they must agree | `npm run build` |
 | The news list, paging or search | `app/components/NewsBrowser.vue` | `npm run build` |
 | A new page on the site | `app/pages/` | `npm run build` |
-| The admin look | `public/assets/css/admin.css` | upload |
+| The news backend's address | `NUXT_PUBLIC_NEWS_API_URL` (`.env` locally, the host's settings in production) | restart, no rebuild |
 
 ---
 
@@ -512,19 +497,11 @@ written into the page for Facebook and Google. There is nothing for `generate` t
 **There is no second build.** `npm run build:php-css` and its watch version were removed with
 the PHP news pages.
 
-The PHP checks below test `php-backend/`, the **retired** backend. They are worth running before
-deleting that folder, and are meaningless for the live site:
+**`npm start` is the one a host runs.** It starts the built server in `.output/server/`, and
+that server answers every address itself — which is why a host needs no `index.html` for
+`/news`, `/news/<slug>` or the home page.
 
-```bash
-php tests/chrome-check.php     # navbar, footer, the one-copy rule
-php tests/db-logic-check.php   # gallery, tags, escaping
-php tests/logic-check.php      # slugs, uploads, cleaner
-php tests/schema-check.php     # schema guards
-php tests/routing-check.php    # the old address table
-```
-
-**The old `tests/tmp-*.php` aliases are gone.** They were kept for a while for older notes;
-use the real names above.
+**There are no PHP checks any more.** They tested the deleted PHP backend.
 
 ---
 
@@ -533,20 +510,20 @@ use the real names above.
 - **A tag chip on a story page now filters.** `NewsBrowser.vue` reads `route.query.tag` and
   opens the list with that tag already on, so `/news?tag=sports` shows only that tag. (The
   chips on a story page used to land on the unfiltered list.)
-- **Everything is local.** The site reads its news from the Strapi backend on this PC; the live
-  x10hosting site is still on the old PHP upload. Moving the domain is the last step.
+- **The news lives on Render now.** `.env` points the site at
+  `https://softnet-2ypz.onrender.com/`, so the site no longer needs the Strapi copy on this PC.
+  The live x10hosting domain is still on the old PHP upload; moving it is the last step.
 - **The phone gallery lost its no-JavaScript rule.** See section 4 — tapping a photo on a
   phone with JavaScript off now opens the full-size image.
 - **The two greens are still different** (`#16a34a` for the site, `#0e7a4f` for the news
   pages). Intentional and now in two separate files, so a change to one does not touch the
   other — but it does mean the home page and the news list do not match exactly side by side.
-- **`--accent` is declared but unused** in `site.css`. A spare token, not a fault.
 - **The reduced-motion block is incomplete.** `main.css` covers scrolling, the marquee and
   the parallax, but **not** `.rainbow-text` and **not** the facilities drag-to-scroll. One line
   in `main.css` closes it. `news.css` has its own block and is fine.
-- **The public-only rules are still in `php-backend/assets/css/site.css`** — news cards,
-  gallery, lightbox, pager. Nothing uses them, since the PHP admin is the only thing left that
-  loads that file.
-- **Nobody has looked at the news pages in a browser yet.** They were verified by running the
-  built site against a stand-in news feed and reading the HTML that came back — status codes,
-  share tags, the story body, the links — not by looking at them on a screen.
+- **The contact form has no key on a host.** `contact.vue` posts to Web3Forms with
+  `config.public.web3formsKey`, and `nuxt.config.ts` leaves it empty with no environment name
+  wired to it. Set it there before the form is expected to work on a live site.
+- **The news pages have never been looked at on a screen** while checking them: they were
+  verified by running the built site against a stand-in news feed and reading the HTML that came
+  back — status codes, share tags, the story body, the links.
