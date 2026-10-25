@@ -499,7 +499,7 @@ function filtersFor(search: string, tag: string): Array<[string, string]> {
 
 /** One Strapi entry, as the shape the news pages already expect. */
 function toNewsItem(doc: any, options: { withBody?: boolean; mediaBase?: string } = {}): NewsItem {
-  const legacyId = Number(doc?.legacy_id ?? doc?.id ?? 0)
+  const numericId = Number(doc?.id ?? 0)
   const slug = String(doc?.slug ?? '').trim()
   const written = dates(doc?.publishedAt ?? doc?.createdAt)
 
@@ -522,11 +522,10 @@ function toNewsItem(doc: any, options: { withBody?: boolean; mediaBase?: string 
     date_iso: written.iso,
     created_at: String(doc?.createdAt ?? ''),
     slug,
-    // The readable address when the story has one. While it has none the number
-    // is used, and it is the number from the old PHP database when that was
-    // carried over — so a link shared before the move still opens the right
-    // story, and the story page knows to look for both shapes.
-    url: slug ? `/news/${slug}` : `/news/${legacyId}`,
+    // The readable address when the story has one. A story whose slug is empty
+    // falls back to Strapi's own number, which the story page also accepts — so
+    // a link always opens something rather than pointing at no page at all.
+    url: slug ? `/news/${slug}` : `/news/${numericId}`,
     gallery_count: gallery.length,
   }
 
@@ -638,8 +637,13 @@ export async function fetchNewsPage(
  * One story, from the piece in the address bar.
  *
  * A plain number is the original address shape (/news/12); anything else is a
- * readable address (/news/softnet-scholarship-2026). Both keep working, so
- * links already posted on Facebook still open the right story.
+ * readable address (/news/softnet-scholarship-2026). Both keep working, so links
+ * already posted on Facebook still open the right story.
+ *
+ * A number is matched against Strapi's own id. The site used to also carry a
+ * "legacy_id" copied from the old PHP database, but that field was retired: it
+ * was never populated, and the old PHP site resolved numeric links by its own
+ * id anyway.
  *
  * A story that is really not there answers { missing: true } — an answer, not a
  * failure. A request that never got through throws instead, because the two
@@ -657,12 +661,8 @@ export async function fetchNewsItem(
   params.set('populate[gallery][populate][image]', 'true')
 
   if (/^\d+$/.test(wanted)) {
-    // An old numeric link. The number is matched against the id kept from the
-    // PHP database AND against Strapi's own number, so /news/12 opens the right
-    // story whether or not the old ids were carried over.
-    const number = String(Number(wanted))
-    params.set('filters[$or][0][legacy_id][$eq]', number)
-    params.set('filters[$or][1][id][$eq]', number)
+    // An old numeric link, matched against Strapi's own number.
+    params.set('filters[id][$eq]', String(Number(wanted)))
   } else {
     params.set('filters[slug][$eq]', wanted.toLowerCase())
   }
