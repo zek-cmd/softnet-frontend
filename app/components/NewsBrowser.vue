@@ -298,7 +298,7 @@ const imageUrl = (path?: string) =>
   path ? apiBase + '/' + String(path).replace(/^\/+/, '') : ''
 
 // The address of a story inside THIS site now, not the PHP host.
-const articleUrl = (item: NewsItem) => (item?.url ? item.url : '/news/' + item.id)
+const articleUrl = (item: NewsItem) => (item?.url ? item.url : '/news/' + item.slug)
 
 const absoluteArticleUrl = (item: NewsItem) => published + articleUrl(item)
 

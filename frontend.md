@@ -458,9 +458,8 @@ ignored.
 | `app/utils/site.js` | Address, phones, email, hours — the only copy now |
 | `static/_sitc/images/` | The site's own images. Published with the site |
 | `nuxt.config.ts` | Every setting: the two hosts, the design tokens' stylesheets, and the pages written to files at build time |
-| `README.md` | How to run, build and host it |
+| `README.md` | How the site is put together — the overview |
 | `frontend.md` | This file: how it looks and where each look lives |
-| `migrations/`, `database.sql` | The old PHP database, kept as a record. **Nothing reads them** |
 
 ---
 

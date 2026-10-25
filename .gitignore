@@ -36,3 +36,7 @@ coverage/
 # Misc
 *.tgz
 .cache/
+
+# Deploy artifacts — these bundles contain a .env, and the Strapi one carries
+# APP_KEYS, ADMIN_JWT_SECRET and the database password. Never commit them.
+*deploy.zip

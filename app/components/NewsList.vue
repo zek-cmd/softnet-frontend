@@ -177,7 +177,7 @@ const hasNews = computed(() => visibleItems.value.length > 0)
 const imageUrl = (path: string) => apiBase + '/' + String(path).replace(/^\/+/, '')
 
 const articleUrl = (item: any) =>
-  item?.url ? item.url : '/news/' + item.id
+  item?.url ? item.url : '/news/' + item.slug
 
 const shareLabel = (item: any) => `Share "${item?.title ?? ''}" on Facebook`
 

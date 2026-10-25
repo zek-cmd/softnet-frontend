@@ -81,6 +81,11 @@ export default defineNuxtConfig({
     // cannot look anything up. Now the page is built on the server on every
     // request, and the app writes those tags itself (see app/pages/news/
     // [slug].vue). One address, one design, always fresh — and no PHP.
+    //
+    // `node-server` is named explicitly (it is also the default for
+    // `nuxt build`) so that a stray environment variable cannot quietly flip
+    // the build back to a folder of static files — which would silently bring
+    // back both faults: no share tags, and no /news/<slug> page at all.
     preset: 'node-server',
 
     // The two pages whose text never changes are still written to files at
@@ -142,6 +147,4 @@ export default defineNuxtConfig({
       web3formsKey: '',
     },
   },
-
-  modules: [],
 })
