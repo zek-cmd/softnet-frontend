@@ -22,7 +22,7 @@ Runtime (installed with `npm install`):
 
 | Package | Version | Purpose |
 |---|---|---|
-| `nuxt` | ^3.14.0 | The web framework (pages, server rendering, build) |
+| `nuxt` | ^3.21.11 | The web framework (pages, server rendering, build) |
 | `vue` | ^3.5.13 | The UI library Nuxt is built on |
 
 Development (build-time only):
