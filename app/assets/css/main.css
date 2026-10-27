@@ -78,9 +78,8 @@
 
   .news-bg {
     background-color: #f0fdf4;
-    background-image:
-      radial-gradient(ellipse at 20% 50%, rgba(34, 197, 94, 0.06) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(34, 197, 94, 0.04) 0%, transparent 40%);
+    background-image: radial-gradient(circle, rgba(34, 197, 94, 0.2) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 
   .news-embed-card {

@@ -110,7 +110,7 @@ const onPointerUp = (e: PointerEvent) => {
 <template>
   <div>
     <!-- Hero -->
-    <section class="band relative flex min-h-[92vh] items-center overflow-hidden bg-gray-50" aria-label="Welcome to SOFTNET">
+    <section class="band relative flex h-screen min-h-screen items-center overflow-hidden bg-gray-50" aria-label="Welcome to SOFTNET">
       <img
         src="/_sitc/images/outside.webp"
         alt=""
@@ -137,6 +137,7 @@ const onPointerUp = (e: PointerEvent) => {
         </div>
       </div>
     </section>
+    <!-- Accreditation seals -->
     <SealStrip />
     <!-- About preview -->
     <section class="section relative overflow-hidden bg-gradient-to-b from-green-50/80 via-white to-green-50/80" aria-label="About SOFTNET">

@@ -5,11 +5,10 @@
   -->
   <section
     v-if="hasNews"
-    class="news-bg relative overflow-hidden border-t border-green-100 py-16 sm:py-20"
+    class="relative overflow-hidden bg-gradient-to-b from-green-50/80 via-white to-green-50/80 py-16 sm:py-20"
     aria-labelledby="latest-news-heading"
   >
-    <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle, #22c55e 1px, transparent 1px); background-size: 26px 26px;"></div>
-
+    <div class="pointer-events-none absolute inset-0 opacity-40" style="background-image: radial-gradient(circle, rgb(34, 197, 94) 1px, transparent 1px); background-size: 24px 24px;"></div>
     <div class="relative mx-auto w-[90%] px-6">
       <!-- Section header: left-aligned with the link on the right, so this
            section does not repeat the centred heading used further up. -->
