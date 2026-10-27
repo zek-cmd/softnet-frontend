@@ -348,18 +348,12 @@ function openFromClick(index: number) {
       <div v-if="isOpen" class="lightbox" role="dialog" aria-modal="true" :aria-label="`Photo ${openIndex + 1} of ${gallery.length}`">
         <div class="lightbox-backdrop" @click="closeViewer" />
         <div class="lightbox-panel">
-          <div class="lightbox-top">
-            <span class="lightbox-count">{{ openIndex + 1 }} of {{ gallery.length }}</span>
-            <button type="button" class="lightbox-btn" aria-label="Close photo viewer" @click="closeViewer">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
-            </button>
-          </div>
           <div class="lightbox-stage">
-            <button type="button" class="lightbox-btn lightbox-arrow lightbox-prev" aria-label="Previous photo" @click="step(-1)">
+            <button type="button" class="lightbox-arrow lightbox-prev" aria-label="Previous photo" @click="step(-1)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
             </button>
             <img v-if="current" :src="imageUrl(current.src)" :alt="current.alt || title" class="lightbox-image">
-            <button type="button" class="lightbox-btn lightbox-arrow lightbox-next" aria-label="Next photo" @click="step(1)">
+            <button type="button" class="lightbox-arrow lightbox-next" aria-label="Next photo" @click="step(1)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
             </button>
           </div>

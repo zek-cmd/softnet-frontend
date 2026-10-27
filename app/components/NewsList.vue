@@ -10,7 +10,7 @@
   >
     <div class="pointer-events-none absolute inset-0 opacity-20" style="background-image: radial-gradient(circle, #22c55e 1px, transparent 1px); background-size: 26px 26px;"></div>
 
-    <div class="relative mx-auto w-full max-w-6xl px-6">
+    <div class="relative mx-auto w-[90%] px-6">
       <!-- Section header: left-aligned with the link on the right, so this
            section does not repeat the centred heading used further up. -->
       <div class="flex flex-col gap-5 border-b border-gray-200 pb-6 sm:flex-row sm:items-end sm:justify-between">

@@ -60,12 +60,11 @@
 
   /* The width of one news item's column.
 
-     90% of the screen, capped at 80rem (1280px) — the same width as the hero
-     band above it, so a very wide monitor stops stretching the block. The
-     story text uses this same width: there is deliberately no narrower
-     character cap on the paragraphs, so the words line up with the cover
-     photo, the gallery and the share row around them. */
-  --news-reading-width: min(90%, 80rem);
+     90% of the screen at every size, with no upper cap. The story text uses
+     this same width: there is deliberately no narrower character cap on the
+     paragraphs, so the words line up with the cover photo, the gallery and
+     the share row around them. */
+  --news-reading-width: 90%;
 }
 
 /* ---------------------------------------------------------------------------
@@ -870,20 +869,7 @@ a.tag-chip:hover {
   max-height: 100%;
 }
 
-.lightbox-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--news-sp-4);
-}
-
-.lightbox-count {
-  font-size: 13px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.lightbox-btn {
+.lightbox-arrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -897,17 +883,17 @@ a.tag-chip:hover {
   transition: background 0.18s ease, border-color 0.18s ease;
 }
 
-.lightbox-btn:hover {
+.lightbox-arrow:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.lightbox-btn:focus-visible {
+.lightbox-arrow:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
 }
 
-.lightbox-btn svg {
+.lightbox-arrow svg {
   width: 20px;
   height: 20px;
 }
